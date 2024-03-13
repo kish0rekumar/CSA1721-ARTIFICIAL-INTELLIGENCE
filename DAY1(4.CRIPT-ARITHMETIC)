@@ -1,0 +1,25 @@
+import itertools
+
+def solve_cryptarithmetic(puzzle):
+ 
+    letters = set(ch for ch in puzzle if ch.isalpha())
+    if len(letters) > 10:
+        return "Invalid puzzle: More than 10 unique letters."
+
+    
+    for perm in itertools.permutations(range(10), len(letters)):
+        digit_mapping = dict(zip(letters, perm))
+
+        
+        equation = puzzle.translate(str.maketrans(digit_mapping))
+
+        
+        if eval(equation):
+            return equation
+
+    return "No solution found."
+
+# Example
+puzzle = "SEND + MORE == MONEY"
+solution = solve_cryptarithmetic(puzzle)
+print("Solution:", solution)
