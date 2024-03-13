@@ -1,25 +1,32 @@
-import itertools
+from itertools import permutations
 
-def solve_cryptarithmetic(puzzle):
- 
-    letters = set(ch for ch in puzzle if ch.isalpha())
-    if len(letters) > 10:
-        return "Invalid puzzle: More than 10 unique letters."
+def encode_string(string, char_to_num):
+    return int("".join(str(char_to_num[char]) for char in string))
 
+def is_mapping_possible(arr, S):
+    unique_chars = set("".join(arr + [S]))
+    if len(unique_chars) > 10:
+        return False
     
-    for perm in itertools.permutations(range(10), len(letters)):
-        digit_mapping = dict(zip(letters, perm))
-
+    for perm in permutations(range(10), len(unique_chars)):
+        char_to_num = {char: num for char, num in zip(unique_chars, perm)}
         
-        equation = puzzle.translate(str.maketrans(digit_mapping))
-
+        encoded_arr = [encode_string(string, char_to_num) for string in arr]
+        encoded_S = encode_string(S, char_to_num)
         
-        if eval(equation):
-            return equation
+        if sum(encoded_arr) == encoded_S:
+            return True, char_to_num
+    
+    return False, None
 
-    return "No solution found."
+arr = ["TWO", "TWO"]
+S = "FOUR"
 
-# Example
-puzzle = "SEND + MORE == MONEY"
-solution = solve_cryptarithmetic(puzzle)
-print("Solution:", solution)
+possible, char_to_num = is_mapping_possible(arr, S)
+if possible:
+    print("Yes")
+    print("Numeric values of each letter:")
+    for char, num in sorted(char_to_num.items()):
+        print(f"{char}: {num}")
+else:
+    print("No")
