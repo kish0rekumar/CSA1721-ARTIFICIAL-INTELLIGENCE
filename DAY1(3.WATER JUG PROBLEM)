@@ -1,0 +1,53 @@
+from collections import deque
+
+def water_jug_BFS(x, y, z):
+    """
+    Solves the Water Jug Problem using BFS.
+    Args:
+        x (int): Capacity of the first jug.
+        y (int): Capacity of the second jug.
+        z (int): Target amount of water.
+    Returns:
+        int: Minimum number of steps to reach the target amount.
+    """
+    visited = set()
+    queue = deque([(0, 0)]) 
+    while queue:
+        a, b = queue.popleft()
+
+        if a == z or b == z:
+            return len(visited)         
+        if a < x:
+            queue.append((x, b))
+        
+        if b < y:
+            queue.append((a, y))
+       
+        if a > 0:
+            queue.append((0, b))
+       
+        if b > 0:
+            queue.append((a, 0))
+        
+        if a > 0 and b < y:
+            pour = min(a, y - b)
+            queue.append((a - pour, b + pour))
+        
+        if b > 0 and a < x:
+            pour = min(b, x - a)
+            queue.append((a + pour, b - pour))
+
+        visited.add((a, b))
+
+    return -1  
+
+if __name__ == "__main__":
+    x = int(input("Enter the capacity of the first jug: "))
+    y = int(input("Enter the capacity of the second jug: "))
+    z = int(input("Enter the target amount of water: "))
+
+    result = water_jug_BFS(x, y, z)
+    if result != -1:
+        print(f"Minimum steps to reach {z} units of water: {result}")
+    else:
+        print("No solution found.")
